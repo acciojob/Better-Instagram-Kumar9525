@@ -1,29 +1,37 @@
-//your code hereconst image = document.querySelectorAll(".image");
-
-image.forEach((image)=>{
-image.addEventListener("dragstart",dragStart)
-image.addEventListener("dragover",dragOver)
-image.addEventListener("drop",drop)
-})
-
-function dragStart(e){
-    e.preventDefault;
-    e.dataTransfer.setData("text/plain",e.target.id)
-
+let dragindex = 0;
+let dropindex = 0;
+let clone = "";
+const images = document.querySelectorAll(".image");
+function drag(e) {
+  e.dataTransfer.setData("text", e.target.id);
 }
-function dragOver(e){
-    e.preventDefault();
+function allowDrop(e) {
+  e.preventDefault();
 }
-function drop(e){
-    e.preventDefault();
-    const draggedId = e.dataTransfer.getData("text/plain");
-    const draggedElement = document.getElementById(draggedId);
-    const dropzone = this;
-
-    if(dropzone.nextSibling == draggedElement){
-        dropzone.parentNode.insertBefore(draggedElement, dropzone)
+function drop(e) {
+  clone = e.target.cloneNode(true);
+  let data = e.dataTransfer.getData("text");
+  let nodelist = document.getElementById("parent").childNodes;
+  console.log(data, e.target.id);
+  for (let i = 0; i < nodelist.length; i++) {
+    if (nodelist[i].id == data) {
+      dragindex = i;
     }
-    else{
-        dropzone.parentNode.insertBefore(draggedElement, dropzone.nextSibling);
-    }
+  }
+  dragdrop(clone);
+  document
+    .getElementById("parent")
+    .replaceChild(document.getElementById(data), e.target);
+  document
+    .getElementById("parent")
+    .insertBefore(
+      clone,
+      document.getElementById("parent").childNodes[dragindex]
+    );
 }
+const dragdrop = (image) => {
+  image.ondragstart = drag;
+  image.ondragover = allowDrop;
+  image.ondrop = drop;
+};
+images.forEach(dragdrop);
