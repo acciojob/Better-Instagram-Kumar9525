@@ -1,77 +1,29 @@
-//your code here
-// Store references to the draggable elements
-const images = document.querySelectorAll('.image');
+//your code hereconst image = document.querySelectorAll(".image");
 
-let draggedItem = null;
+image.forEach((image)=>{
+image.addEventListener("dragstart",dragStart)
+image.addEventListener("dragover",dragOver)
+image.addEventListener("drop",drop)
+})
 
-images.forEach(image => {
-  image.addEventListener('dragstart', function() {
-    draggedItem = this;
-    setTimeout(() => {
-      this.style.display = 'none';
-    }, 0);
-  });
+function dragStart(e){
+    e.preventDefault;
+    e.dataTransfer.setData("text/plain",e.target.id)
 
-  image.addEventListener('dragend', function() {
-    setTimeout(() => {
-      draggedItem.style.display = 'block';
-      draggedItem = null;
-    }, 0);
-  });
-
-  image.addEventListener('dragover', function(e) {
+}
+function dragOver(e){
     e.preventDefault();
-  });
-
-  image.addEventListener('dragenter', function(e) {
+}
+function drop(e){
     e.preventDefault();
-    this.classList.add('selected');
-  });
+    const draggedId = e.dataTransfer.getData("text/plain");
+    const draggedElement = document.getElementById(draggedId);
+    const dropzone = this;
 
-  image.addEventListener('dragleave', function() {
-    this.classList.remove('selected');
-  });
-
-  image.addEventListener('drop', function() {
-    if (draggedItem !== null && draggedItem !== this) {
-      const tempBackground = this.style.backgroundImage;
-      this.style.backgroundImage = draggedItem.style.backgroundImage;
-      draggedItem.style.backgroundImage = tempBackground;
+    if(dropzone.nextSibling == draggedElement){
+        dropzone.parentNode.insertBefore(draggedElement, dropzone)
     }
-    this.classList.remove('selected');
-  });
-});
-
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  const images = document.querySelectorAll(".image");
-
-  let dragged;
-
-  images.forEach((image) => {
-    image.addEventListener("dragstart", dragStart);
-    image.addEventListener("dragover", dragOver);
-    image.addEventListener("drop", drop);
-  });
-
-  function dragStart() {
-    dragged = this;
-    setTimeout(() => {
-      this.style.display = "none";
-    }, 0);
-  }
-
-  function dragOver(event) {
-    event.preventDefault();
-  }
-
-  function drop() {
-    if (dragged !== this) {
-      const temp = this.innerHTML;
-      this.innerHTML = dragged.innerHTML;
-      dragged.innerHTML = temp;
+    else{
+        dropzone.parentNode.insertBefore(draggedElement, dropzone.nextSibling);
     }
-  }
-});
+}
